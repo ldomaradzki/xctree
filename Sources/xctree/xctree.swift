@@ -65,7 +65,8 @@ struct XCTree: ParsableCommand {
             Requires:
             - Running iOS Simulator instance
             - Accessibility permissions for your terminal app
-            """
+            """,
+        version: "0.1.0"
     )
 
     @Option(name: .shortAndLong, help: "Output format (tree or json)")
@@ -76,6 +77,12 @@ struct XCTree: ParsableCommand {
 
     @Option(name: .shortAndLong, help: "Column width for text wrapping")
     var width: Int = 80
+
+    mutating func validate() throws {
+        guard width > 0 else {
+            throw ValidationError("Width must be a positive number (got \(width))")
+        }
+    }
 
     mutating func run() throws {
         // Check accessibility permissions
