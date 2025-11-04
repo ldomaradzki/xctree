@@ -1,111 +1,12 @@
 import Foundation
 import AXWrapper
 import TreeFormatter
+import ArgumentParser
 
-/// Command-line configuration
-struct Config {
-    enum OutputFormat {
-        case tree
-        case json
-    }
-
-    let format: OutputFormat
-    let useColors: Bool
-    let maxWidth: Int
-
-    static let `default` = Config(format: .tree, useColors: true, maxWidth: 80)
-}
-
-/// Command-line argument parser
-enum ArgumentParser {
-    enum ParseError: Error, CustomStringConvertible {
-        case invalidFormat(String)
-        case missingFormatValue
-        case missingWidthValue
-        case invalidWidth(String)
-        case unknownArgument(String)
-
-        var description: String {
-            switch self {
-            case .invalidFormat(let value):
-                return "❌ Error: Invalid format '\(value)'. Use 'tree' or 'json'."
-            case .missingFormatValue:
-                return "❌ Error: --format requires an argument (tree or json)"
-            case .missingWidthValue:
-                return "❌ Error: --width requires a number argument"
-            case .invalidWidth(let value):
-                return "❌ Error: Invalid width '\(value)'. Must be a positive number."
-            case .unknownArgument(let arg):
-                return "❌ Error: Unknown argument '\(arg)'"
-            }
-        }
-    }
-
-    static func parse(_ args: [String]) throws -> Config {
-        var format: Config.OutputFormat = .tree
-        var useColors = true
-        var maxWidth = 80
-
-        var iterator = args.makeIterator()
-        while let arg = iterator.next() {
-            switch arg {
-            case "--help", "-h":
-                printUsage()
-                exit(0)
-
-            case "--format", "-f":
-                guard let formatArg = iterator.next() else {
-                    throw ParseError.missingFormatValue
-                }
-                switch formatArg.lowercased() {
-                case "tree":
-                    format = .tree
-                case "json":
-                    format = .json
-                default:
-                    throw ParseError.invalidFormat(formatArg)
-                }
-
-            case "--no-color":
-                useColors = false
-
-            case "--width", "-w":
-                guard let widthArg = iterator.next() else {
-                    throw ParseError.missingWidthValue
-                }
-                guard let width = Int(widthArg), width > 0 else {
-                    throw ParseError.invalidWidth(widthArg)
-                }
-                maxWidth = width
-
-            default:
-                throw ParseError.unknownArgument(arg)
-            }
-        }
-
-        return Config(format: format, useColors: useColors, maxWidth: maxWidth)
-    }
-
-    static func printUsage() {
-        print("""
-        Usage: xctree [OPTIONS]
-
-        Options:
-          --format <tree|json>   Output format (default: tree)
-          --no-color             Disable colored output
-          --width <number>       Set column width (default: 80)
-          --help, -h             Show this help message
-
-        Description:
-          Prints the accessibility tree of the currently running iOS Simulator app.
-          Similar to Xcode's Accessibility Inspector but for the command line.
-
-        Examples:
-          xctree                           # Tree output with colors
-          xctree --format json             # JSON output
-          xctree --no-color --width 120    # Wide tree without colors
-        """)
-    }
+/// Output format for accessibility tree
+enum OutputFormat: String, ExpressibleByArgument {
+    case tree
+    case json
 }
 
 /// Converts AccessibilityElement to PrintableElement
@@ -153,45 +54,53 @@ func toTreeNode(_ element: AccessibilityElement) -> TreeNode {
 }
 
 @main
-struct xctree {
-    static func main() {
-        // Parse arguments
-        let args = Array(CommandLine.arguments.dropFirst())
-        let config: Config
-        do {
-            config = try ArgumentParser.parse(args)
-        } catch let error as ArgumentParser.ParseError {
-            print(error.description)
-            print("")
-            ArgumentParser.printUsage()
-            exit(1)
-        } catch {
-            print("❌ Error: \(error)")
-            exit(1)
-        }
+struct XCTree: ParsableCommand {
+    static let configuration = CommandConfiguration(
+        commandName: "xctree",
+        abstract: "iOS Simulator Accessibility Tree Inspector",
+        discussion: """
+            Extracts and displays the accessibility tree from iOS Simulator apps.
+            Similar to Xcode's Accessibility Inspector but as a CLI tool.
 
+            Requires:
+            - Running iOS Simulator instance
+            - Accessibility permissions for your terminal app
+            """
+    )
+
+    @Option(name: .shortAndLong, help: "Output format (tree or json)")
+    var format: OutputFormat = .tree
+
+    @Flag(name: .long, help: "Disable colored output")
+    var noColor = false
+
+    @Option(name: .shortAndLong, help: "Column width for text wrapping")
+    var width: Int = 80
+
+    mutating func run() throws {
         // Check accessibility permissions
         guard PermissionChecker.hasPermission() else {
             print(PermissionChecker.permissionErrorMessage())
-            exit(1)
+            throw ExitCode.failure
         }
 
         // Find iOS Simulator
         guard let simulator = SimulatorFinder.findSimulator() else {
             print(SimulatorFinder.simulatorNotFoundMessage())
-            exit(1)
+            throw ExitCode.failure
         }
 
         // Find iOS app element
         guard let iosAppElement = SimulatorFinder.findIOSAppElement(in: simulator) else {
             print(SimulatorFinder.iosAppNotFoundMessage())
-            exit(1)
+            throw ExitCode.failure
         }
 
         // Output based on format
-        switch config.format {
+        switch format {
         case .tree:
-            let printerConfig = TreePrinterConfig(maxWidth: config.maxWidth, useColors: config.useColors)
+            let useColors = !noColor
+            let printerConfig = TreePrinterConfig(maxWidth: width, useColors: useColors)
             let printableChildren = iosAppElement.children.map { toPrintableElement($0) }
             TreePrinter.printRoots(printableChildren, config: printerConfig)
 

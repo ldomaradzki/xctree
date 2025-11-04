@@ -15,14 +15,14 @@ A Swift command-line tool that extracts and displays the accessibility tree from
 ### Via Homebrew
 
 ```bash
-brew tap lukasz/xctree
+brew tap ldomaradzki/xctree
 brew install xctree
 ```
 
 ### Build from Source
 
 ```bash
-git clone https://github.com/lukasz/xctree.git
+git clone https://github.com/ldomaradzki/xctree.git
 cd xctree
 swift build -c release
 .build/release/xctree
@@ -49,8 +49,8 @@ xctree --help
 
 ## Requirements
 
-- macOS 13.0 (Ventura) or later
-- Xcode 14.0 or later (for building from source)
+- macOS 15.0 (Sequoia) or later
+- Xcode
 - Running iOS Simulator instance
 - Accessibility permissions for your terminal app
 

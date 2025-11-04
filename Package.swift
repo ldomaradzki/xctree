@@ -22,6 +22,10 @@ let package = Package(
             targets: ["TreeFormatter"]
         ),
     ],
+    dependencies: [
+        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.6.2"),
+        .package(url: "https://github.com/swiftlang/swift-docc-plugin", from: "1.4.5")
+    ],
     targets: [
         // Libraries
         .target(
@@ -38,7 +42,8 @@ let package = Package(
             name: "xctree",
             dependencies: [
                 "AXWrapper",
-                "TreeFormatter"
+                "TreeFormatter",
+                .product(name: "ArgumentParser", package: "swift-argument-parser")
             ]
         ),
 
