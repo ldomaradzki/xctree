@@ -74,21 +74,12 @@ public enum TreePrinter {
             roleLine += role
         }
 
-        // Show short label on same line for clarity
-        if let label = element.label, !label.isEmpty, label.count < 30 {
-            if config.useColors {
-                roleLine += " - \(ColorSupport.bold)\(label)\(ColorSupport.reset)"
-            } else {
-                roleLine += " - \(label)"
-            }
-        }
-
         Swift.print(roleLine)
 
         // Print attributes on subsequent lines
         let attrPrefix = prefix + continuation
 
-        printAttribute(name: "label", value: element.label ?? element.title, prefix: attrPrefix, config: config)
+        printAttribute(name: "label", value: element.label ?? element.title, prefix: attrPrefix, config: config, color: config.useColors ? ColorSupport.bold : "")
         printAttribute(name: "value", value: element.value, prefix: attrPrefix, config: config)
 
         if let traits = element.traits, !traits.isEmpty {
@@ -126,11 +117,6 @@ public enum TreePrinter {
         color: String = ""
     ) {
         guard let value = value, !value.isEmpty else { return }
-
-        // Skip label if it was already shown inline
-        if name == "label" && value.count < 30 {
-            return
-        }
 
         let closeColor = color.isEmpty ? "" : ColorSupport.reset
         let testLine = "\(prefix)\(name): \(value)"
