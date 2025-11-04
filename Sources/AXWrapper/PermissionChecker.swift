@@ -1,5 +1,6 @@
 import Foundation
 import ApplicationServices
+import AppKit
 
 /// Checks and validates accessibility permissions.
 public enum PermissionChecker {
@@ -22,9 +23,15 @@ public enum PermissionChecker {
         2. Add your terminal app to the list
         3. Enable the checkbox next to it
         4. Restart this tool
-
-        Alternatively, run this command to open the accessibility settings:
-          open "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"
         """
+    }
+
+    /// Opens System Settings to the Accessibility privacy panel.
+    ///
+    /// - Returns: true if the settings were opened successfully, false otherwise
+    @discardableResult
+    public static func openAccessibilitySettings() -> Bool {
+        let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")!
+        return NSWorkspace.shared.open(url)
     }
 }

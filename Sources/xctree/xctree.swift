@@ -88,6 +88,19 @@ struct XCTree: ParsableCommand {
         // Check accessibility permissions
         guard PermissionChecker.hasPermission() else {
             print(PermissionChecker.permissionErrorMessage())
+            print()
+            print("Would you like to open System Settings now? [y/N]: ", terminator: "")
+
+            if let response = readLine()?.lowercased().trimmingCharacters(in: .whitespaces),
+               response == "y" || response == "yes" {
+                print("Opening System Settings...")
+                if PermissionChecker.openAccessibilitySettings() {
+                    print("✓ System Settings opened. Please grant accessibility permissions and try again.")
+                } else {
+                    print("⚠️  Failed to open System Settings. Please open it manually.")
+                }
+            }
+
             throw ExitCode.failure
         }
 
