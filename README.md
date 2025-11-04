@@ -1,0 +1,114 @@
+# xctree
+
+A Swift command-line tool that extracts and displays the accessibility tree from iOS Simulator apps, similar to Xcode's Accessibility Inspector but as a CLI tool.
+
+## Features
+
+- Extract accessibility tree from running iOS Simulator apps
+- Multiple output formats (tree view with colors, JSON)
+- Smart text wrapping and formatting
+- Comprehensive accessibility attribute support (role, label, value, traits, identifiers, hints)
+- Built with Swift Package Manager for easy distribution
+
+## Installation
+
+### Via Homebrew
+
+```bash
+brew tap lukasz/xctree
+brew install xctree
+```
+
+### Build from Source
+
+```bash
+git clone https://github.com/lukasz/xctree.git
+cd xctree
+swift build -c release
+.build/release/xctree
+```
+
+## Usage
+
+```bash
+# Display tree of currently running iOS Simulator app
+xctree
+
+# Output as JSON
+xctree --format json
+
+# Disable colors
+xctree --no-color
+
+# Set custom width for text wrapping
+xctree --width 120
+
+# Show help
+xctree --help
+```
+
+## Requirements
+
+- macOS 13.0 (Ventura) or later
+- Xcode 14.0 or later (for building from source)
+- Running iOS Simulator instance
+- Accessibility permissions for your terminal app
+
+## Output Format
+
+### Tree View (Default)
+
+```
+├── AXButton - Submit
+│   label: Submit Form
+│   traits: [button]
+│   id: submit_button
+│   hint: Double-tap to submit the form
+└── AXTextField - Email
+    label: Email Address
+    value: user@example.com
+    traits: [staticText]
+```
+
+### JSON Format
+
+```json
+{
+  "role": "AXButton",
+  "label": "Submit Form",
+  "identifier": "submit_button",
+  "traits": ["button"],
+  "hint": "Double-tap to submit the form",
+  "children": []
+}
+```
+
+## Architecture
+
+xctree is built with a modular Swift Package Manager structure:
+
+- **AXWrapper** - Library that wraps macOS Accessibility API
+- **TreeFormatter** - Library for output formatting (tree view, JSON, colors)
+- **xctree** - Executable that orchestrates the workflow
+
+## Limitations
+
+- Only works with iOS Simulator (not physical devices)
+- Uses public macOS Accessibility API - some iOS UI elements may not be exposed
+- Requires Accessibility permissions
+
+## Testing
+
+```bash
+swift test
+```
+
+The project includes comprehensive unit tests (169+ tests covering all core functionality).
+
+## License
+
+MIT
+
+## Contributing
+
+Contributions welcome! Please feel free to submit issues or pull requests.
