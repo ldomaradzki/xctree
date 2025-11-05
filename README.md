@@ -52,34 +52,34 @@ xctree --help
 - macOS 15.0 (Sequoia) or later
 - Xcode
 - Running iOS Simulator instance
-- Accessibility permissions for your terminal app
+- Accessibility permissions for your terminal app (xctree will detect missing permissions and help you set them up on first run)
 
 ## Output Format
 
 ### Tree View (Default)
 
 ```
-├── AXButton - Submit
-│   label: Submit Form
-│   traits: [button]
-│   id: submit_button
-│   hint: Double-tap to submit the form
-└── AXTextField - Email
-    label: Email Address
-    value: user@example.com
-    traits: [staticText]
+└── AXWindow
+    label: Login Window
+    ├── AXButton
+    │   label: Submit
+    │   traits: [button]
+    │   id: submit_btn
+    └── AXTextField
+        label: Email Address
+        value: user@example.com
+        traits: [textField]
+        id: email_field
 ```
 
 ### JSON Format
 
 ```json
 {
+  "identifier": "submit_btn",
+  "label": "Submit",
   "role": "AXButton",
-  "label": "Submit Form",
-  "identifier": "submit_button",
-  "traits": ["button"],
-  "hint": "Double-tap to submit the form",
-  "children": []
+  "traits": ["button"]
 }
 ```
 
@@ -94,16 +94,14 @@ xctree is built with a modular Swift Package Manager structure:
 ## Limitations
 
 - Only works with iOS Simulator (not physical devices)
-- Uses public macOS Accessibility API - some iOS UI elements may not be exposed
-- Requires Accessibility permissions
+- Uses public macOS Accessibility API - some iOS UI elements may not be exposed (e.g., tab bar buttons in Xcode 26)
+- Requires macOS 15.0+ and Accessibility permissions
 
 ## Testing
 
 ```bash
 swift test
 ```
-
-The project includes comprehensive unit tests (169+ tests covering all core functionality).
 
 ## License
 
