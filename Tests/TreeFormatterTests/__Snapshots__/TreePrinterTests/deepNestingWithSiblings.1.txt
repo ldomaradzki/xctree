@@ -1,0 +1,23 @@
+└── AXDialog
+    label: User Settings
+    ├── AXGroup
+    │   label: Content
+    │   ├── AXGroup
+    │   │   label: Header
+    │   │   ├── AXImage
+    │   │   │   label: User Icon
+    │   │   │   traits: [image]
+    │   │   └── AXImage
+    │   │       label: Settings Icon
+    │   │       traits: [image]
+    │   └── AXStaticText
+    │       label: Welcome back! Please review your settings.
+    │       traits: [staticText]
+    └── AXGroup
+        label: Footer
+        ├── AXButton
+        │   label: Save
+        │   traits: [button]
+        └── AXButton
+            label: Close
+            traits: [button]

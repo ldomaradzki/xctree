@@ -1,0 +1,6 @@
+├── AXButton
+│   label: Cancel
+│   traits: [button]
+└── AXButton
+    label: OK
+    traits: [button]

@@ -1,0 +1,4 @@
+└── [35mAXButton[0m
+    label: [1mSubmit[0m
+    traits: [90m[button][0m
+    id: [36msubmit_btn[0m

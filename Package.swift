@@ -24,7 +24,8 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.6.2"),
-        .package(url: "https://github.com/swiftlang/swift-docc-plugin", from: "1.4.5")
+        .package(url: "https://github.com/swiftlang/swift-docc-plugin", from: "1.4.5"),
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.18.7")
     ],
     targets: [
         // Libraries
@@ -54,7 +55,10 @@ let package = Package(
         ),
         .testTarget(
             name: "TreeFormatterTests",
-            dependencies: ["TreeFormatter"]
+            dependencies: [
+                "TreeFormatter",
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
+            ]
         ),
     ]
 )

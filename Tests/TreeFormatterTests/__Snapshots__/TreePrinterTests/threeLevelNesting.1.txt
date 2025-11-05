@@ -1,0 +1,8 @@
+└── AXWindow
+    label: Settings
+    └── AXGroup
+        label: Actions
+        └── AXButton
+            label: Delete
+            traits: [button]
+            id: delete_btn

@@ -45,6 +45,63 @@ public struct PrintableElement {
 
 /// Prints accessibility trees with visual connectors and formatting.
 public enum TreePrinter {
+    /// Formats an element and its children as a tree structure string.
+    ///
+    /// - Parameters:
+    ///   - element: The element to format
+    ///   - depth: Current depth in the tree (for recursion)
+    ///   - isLast: Whether this is the last sibling
+    ///   - prefix: Current line prefix (for indentation)
+    ///   - config: Formatting configuration
+    /// - Returns: Formatted tree string
+    public static func format(
+        _ element: PrintableElement,
+        depth: Int = 0,
+        isLast: Bool = true,
+        prefix: String = "",
+        config: TreePrinterConfig = TreePrinterConfig()
+    ) -> String {
+        var lines: [String] = []
+
+        // Determine tree characters
+        let connector = isLast ? "└──" : "├──"
+        let continuation = isLast ? "    " : "│   "
+
+        // Build the role/type as the main line
+        let role = element.role ?? "AXElement"
+        var roleLine = "\(prefix)\(connector) "
+
+        if config.useColors {
+            roleLine += "\(ColorSupport.magenta)\(role)\(ColorSupport.reset)"
+        } else {
+            roleLine += role
+        }
+
+        lines.append(roleLine)
+
+        // Format attributes on subsequent lines
+        let attrPrefix = prefix + continuation
+
+        lines.append(contentsOf: formatAttribute(name: "label", value: element.label ?? element.title, prefix: attrPrefix, config: config, color: config.useColors ? ColorSupport.bold : ""))
+        lines.append(contentsOf: formatAttribute(name: "value", value: element.value, prefix: attrPrefix, config: config))
+
+        if let traits = element.traits, !traits.isEmpty {
+            let traitsStr = "[\(traits.joined(separator: ", "))]"
+            lines.append(contentsOf: formatAttribute(name: "traits", value: traitsStr, prefix: attrPrefix, config: config, color: config.useColors ? ColorSupport.gray : ""))
+        }
+
+        lines.append(contentsOf: formatAttribute(name: "id", value: element.identifier, prefix: attrPrefix, config: config, color: config.useColors ? ColorSupport.cyan : ""))
+        lines.append(contentsOf: formatAttribute(name: "hint", value: element.hint, prefix: attrPrefix, config: config))
+
+        // Format children
+        for (index, child) in element.children.enumerated() {
+            let childIsLast = index == element.children.count - 1
+            lines.append(format(child, depth: depth + 1, isLast: childIsLast, prefix: prefix + continuation, config: config))
+        }
+
+        return lines.joined(separator: "\n")
+    }
+
     /// Prints an element and its children as a tree structure.
     ///
     /// - Parameters:
@@ -60,41 +117,23 @@ public enum TreePrinter {
         prefix: String = "",
         config: TreePrinterConfig = TreePrinterConfig()
     ) {
-        // Determine tree characters
-        let connector = isLast ? "└──" : "├──"
-        let continuation = isLast ? "    " : "│   "
+        let output = format(element, depth: depth, isLast: isLast, prefix: prefix, config: config)
+        Swift.print(output)
+    }
 
-        // Print the role/type as the main line
-        let role = element.role ?? "AXElement"
-        var roleLine = "\(prefix)\(connector) "
-
-        if config.useColors {
-            roleLine += "\(ColorSupport.magenta)\(role)\(ColorSupport.reset)"
-        } else {
-            roleLine += role
+    /// Formats multiple root elements as siblings.
+    ///
+    /// - Parameters:
+    ///   - elements: The elements to format
+    ///   - config: Formatting configuration
+    /// - Returns: Formatted tree string
+    public static func formatRoots(_ elements: [PrintableElement], config: TreePrinterConfig = TreePrinterConfig()) -> String {
+        var lines: [String] = []
+        for (index, element) in elements.enumerated() {
+            let isLast = index == elements.count - 1
+            lines.append(format(element, depth: 0, isLast: isLast, prefix: "", config: config))
         }
-
-        Swift.print(roleLine)
-
-        // Print attributes on subsequent lines
-        let attrPrefix = prefix + continuation
-
-        printAttribute(name: "label", value: element.label ?? element.title, prefix: attrPrefix, config: config, color: config.useColors ? ColorSupport.bold : "")
-        printAttribute(name: "value", value: element.value, prefix: attrPrefix, config: config)
-
-        if let traits = element.traits, !traits.isEmpty {
-            let traitsStr = "[\(traits.joined(separator: ", "))]"
-            printAttribute(name: "traits", value: traitsStr, prefix: attrPrefix, config: config, color: config.useColors ? ColorSupport.gray : "")
-        }
-
-        printAttribute(name: "id", value: element.identifier, prefix: attrPrefix, config: config, color: config.useColors ? ColorSupport.cyan : "")
-        printAttribute(name: "hint", value: element.hint, prefix: attrPrefix, config: config)
-
-        // Print children
-        for (index, child) in element.children.enumerated() {
-            let childIsLast = index == element.children.count - 1
-            print(child, depth: depth + 1, isLast: childIsLast, prefix: prefix + continuation, config: config)
-        }
+        return lines.joined(separator: "\n")
     }
 
     /// Prints multiple root elements as siblings.
@@ -103,20 +142,18 @@ public enum TreePrinter {
     ///   - elements: The elements to print
     ///   - config: Printing configuration
     public static func printRoots(_ elements: [PrintableElement], config: TreePrinterConfig = TreePrinterConfig()) {
-        for (index, element) in elements.enumerated() {
-            let isLast = index == elements.count - 1
-            print(element, depth: 0, isLast: isLast, prefix: "", config: config)
-        }
+        let output = formatRoots(elements, config: config)
+        Swift.print(output)
     }
 
-    private static func printAttribute(
+    private static func formatAttribute(
         name: String,
         value: String?,
         prefix: String,
         config: TreePrinterConfig,
         color: String = ""
-    ) {
-        guard let value = value, !value.isEmpty else { return }
+    ) -> [String] {
+        guard let value = value, !value.isEmpty else { return [] }
 
         let closeColor = color.isEmpty ? "" : ColorSupport.reset
         let testLine = "\(prefix)\(name): \(value)"
@@ -127,15 +164,24 @@ public enum TreePrinter {
         if visibleLength <= config.maxWidth {
             // Fits on one line
             if !color.isEmpty {
-                Swift.print("\(prefix)\(name): \(color)\(value)\(closeColor)")
+                return ["\(prefix)\(name): \(color)\(value)\(closeColor)"]
             } else {
-                Swift.print("\(prefix)\(name): \(value)")
+                return ["\(prefix)\(name): \(value)"]
             }
         } else {
             // Too long - split into multiple lines
-            Swift.print("\(prefix)\(name):")
             let valuePrefix = prefix + "  "
-            TextWrapper.print(value, prefix: valuePrefix, maxWidth: config.maxWidth, color: color)
+            let wrappedLines = TextWrapper.wrap(value, prefix: valuePrefix, maxWidth: config.maxWidth)
+
+            var lines = ["\(prefix)\(name):"]
+            for line in wrappedLines {
+                if !color.isEmpty {
+                    lines.append("\(color)\(line)\(closeColor)")
+                } else {
+                    lines.append(line)
+                }
+            }
+            return lines
         }
     }
 }

@@ -1,0 +1,6 @@
+└── AXTextField
+    label: Email Address
+    value: user@example.com
+    traits: [textField, selected]
+    id: email_field
+    hint: Enter your email address

@@ -1,0 +1,23 @@
+└── AXWindow
+    label: Login Window
+    ├── AXGroup
+    │   label: Login Form
+    │   ├── AXTextField
+    │   │   label: Username
+    │   │   value: john.doe
+    │   │   traits: [textField]
+    │   │   id: username_field
+    │   └── AXTextField
+    │       label: Password
+    │       traits: [textField, secureText]
+    │       id: password_field
+    └── AXGroup
+        label: Actions
+        ├── AXButton
+        │   label: Log In
+        │   traits: [button]
+        │   id: login_btn
+        └── AXButton
+            label: Cancel
+            traits: [button]
+            id: cancel_btn

@@ -1,0 +1,8 @@
+└── AXGroup
+    label: Name Group
+    ├── AXStaticText
+    │   label: First Name
+    │   traits: [staticText]
+    └── AXStaticText
+        label: Last Name
+        traits: [staticText]

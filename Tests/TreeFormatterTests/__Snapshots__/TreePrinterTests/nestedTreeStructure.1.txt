@@ -1,0 +1,8 @@
+└── AXWindow
+    label: Main Window
+    └── AXGroup
+        label: Button Group
+        └── AXButton
+            label: Submit
+            traits: [button]
+            id: submit_btn
