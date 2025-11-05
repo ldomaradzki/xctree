@@ -2,6 +2,8 @@
 
 A Swift command-line tool that extracts and displays the accessibility tree from iOS Simulator apps, similar to Xcode's Accessibility Inspector but as a CLI tool.
 
+![xctree in action](images/xctree.png)
+
 ## Features
 
 - Extract accessibility tree from running iOS Simulator apps
