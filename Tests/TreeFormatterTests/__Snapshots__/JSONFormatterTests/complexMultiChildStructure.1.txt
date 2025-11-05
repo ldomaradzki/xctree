@@ -1,0 +1,52 @@
+{
+  "children" : [
+    {
+      "children" : [
+        {
+          "identifier" : "username_field",
+          "label" : "Username",
+          "role" : "AXTextField",
+          "traits" : [
+            "textField"
+          ],
+          "value" : "john.doe"
+        },
+        {
+          "identifier" : "password_field",
+          "label" : "Password",
+          "role" : "AXTextField",
+          "traits" : [
+            "textField",
+            "secureText"
+          ]
+        }
+      ],
+      "label" : "Login Form",
+      "role" : "AXGroup"
+    },
+    {
+      "children" : [
+        {
+          "identifier" : "login_btn",
+          "label" : "Log In",
+          "role" : "AXButton",
+          "traits" : [
+            "button"
+          ]
+        },
+        {
+          "identifier" : "cancel_btn",
+          "label" : "Cancel",
+          "role" : "AXButton",
+          "traits" : [
+            "button"
+          ]
+        }
+      ],
+      "label" : "Actions",
+      "role" : "AXGroup"
+    }
+  ],
+  "label" : "Login Window",
+  "role" : "AXWindow"
+}

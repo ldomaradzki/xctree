@@ -1,0 +1,20 @@
+{
+  "children" : [
+    {
+      "label" : "First Name",
+      "role" : "AXStaticText",
+      "traits" : [
+        "staticText"
+      ]
+    },
+    {
+      "label" : "Last Name",
+      "role" : "AXStaticText",
+      "traits" : [
+        "staticText"
+      ]
+    }
+  ],
+  "label" : "Name Group",
+  "role" : "AXGroup"
+}

@@ -1,0 +1,8 @@
+{
+  "identifier" : "submit_btn",
+  "label" : "Submit",
+  "role" : "AXButton",
+  "traits" : [
+    "button"
+  ]
+}

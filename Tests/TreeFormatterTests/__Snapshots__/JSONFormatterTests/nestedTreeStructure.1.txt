@@ -1,0 +1,20 @@
+{
+  "children" : [
+    {
+      "children" : [
+        {
+          "identifier" : "submit_btn",
+          "label" : "Submit",
+          "role" : "AXButton",
+          "traits" : [
+            "button"
+          ]
+        }
+      ],
+      "label" : "Button Group",
+      "role" : "AXGroup"
+    }
+  ],
+  "label" : "Main Window",
+  "role" : "AXWindow"
+}

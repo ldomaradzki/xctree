@@ -1,0 +1,14 @@
+{
+  "frame" : {
+    "height" : 44,
+    "width" : 100,
+    "x" : 10.5,
+    "y" : 20
+  },
+  "identifier" : "positioned_btn",
+  "label" : "Positioned Button",
+  "role" : "AXButton",
+  "traits" : [
+    "button"
+  ]
+}

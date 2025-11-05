@@ -1,0 +1,19 @@
+{
+  "children" : [
+    {
+      "label" : "Cancel",
+      "role" : "AXButton",
+      "traits" : [
+        "button"
+      ]
+    },
+    {
+      "label" : "OK",
+      "role" : "AXButton",
+      "traits" : [
+        "button"
+      ]
+    }
+  ],
+  "role" : "AXApplication"
+}

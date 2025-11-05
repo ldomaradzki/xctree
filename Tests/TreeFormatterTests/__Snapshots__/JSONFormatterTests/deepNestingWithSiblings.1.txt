@@ -1,0 +1,59 @@
+{
+  "children" : [
+    {
+      "children" : [
+        {
+          "children" : [
+            {
+              "label" : "User Icon",
+              "role" : "AXImage",
+              "traits" : [
+                "image"
+              ]
+            },
+            {
+              "label" : "Settings Icon",
+              "role" : "AXImage",
+              "traits" : [
+                "image"
+              ]
+            }
+          ],
+          "label" : "Header",
+          "role" : "AXGroup"
+        },
+        {
+          "label" : "Welcome back! Please review your settings.",
+          "role" : "AXStaticText",
+          "traits" : [
+            "staticText"
+          ]
+        }
+      ],
+      "label" : "Content",
+      "role" : "AXGroup"
+    },
+    {
+      "children" : [
+        {
+          "label" : "Save",
+          "role" : "AXButton",
+          "traits" : [
+            "button"
+          ]
+        },
+        {
+          "label" : "Close",
+          "role" : "AXButton",
+          "traits" : [
+            "button"
+          ]
+        }
+      ],
+      "label" : "Footer",
+      "role" : "AXGroup"
+    }
+  ],
+  "label" : "User Settings",
+  "role" : "AXDialog"
+}

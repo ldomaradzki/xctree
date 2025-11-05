@@ -1,0 +1,12 @@
+{
+  "hint" : "Enter your email address",
+  "identifier" : "email_field",
+  "label" : "Email Address",
+  "role" : "AXTextField",
+  "title" : "Email",
+  "traits" : [
+    "textField",
+    "selected"
+  ],
+  "value" : "user@example.com"
+}

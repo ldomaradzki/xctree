@@ -1,0 +1,20 @@
+{
+  "children" : [
+    {
+      "children" : [
+        {
+          "identifier" : "delete_btn",
+          "label" : "Delete",
+          "role" : "AXButton",
+          "traits" : [
+            "button"
+          ]
+        }
+      ],
+      "label" : "Actions",
+      "role" : "AXGroup"
+    }
+  ],
+  "label" : "Settings",
+  "role" : "AXWindow"
+}

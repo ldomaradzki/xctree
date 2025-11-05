@@ -1,0 +1,4 @@
+{
+  "label" : "This is a very long label that should wrap to multiple lines when printed because it exceeds the maximum width",
+  "role" : "AXStaticText"
+}
